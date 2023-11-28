@@ -3,6 +3,8 @@ public class Main {
 
 	public static void main(String[] args) {
 		
+		//Test Change
+		
 		//Test Instructions
 		//TO-DO: Implement text read and insert.
 		Instruction first = new Instruction(0,2,4,6);
