@@ -6,6 +6,8 @@ iq = zeros(10, 4); iq(:, 1) = 9; %Instruction Queue (Pops)
 rf = 0:7; %Register File
 rat = zeros(1,8);
 out = num2str(zeros(26,8));
+e_unit = zeros(2,3); %Execution Units
+rs_issue = zeros(1, 5) %Tracks Issuing of RS Units
 
 eu_Time = [2, 2, 10, 40];
 
@@ -35,9 +37,20 @@ if issued(1) == 1
   instr_issued += 1;
   scheduler(instr_issued, 1) = n_cc;
   scheduler(instr_issued, 4) = issued(2);
-  iq = POP_IQ(iq)
+  rs_issue(issued(2)) = n_cc;
+  iq = POP_IQ(iq);
 endif
-%[rs rat ]
+
+[rs e_unit dispatched] = Dispatch(rs, e_unit, rs_issue, n_cc)
+if dispatched(1) == 1
+  for i = 1:instr_issued %Update Scheduler Log
+    if dispatched(2) == scheduler(i, 4) && scheduler(i, 3) == 0
+      scheduler(i, 2) = dispatched(2);
+    endif
+  endfor
+endif
+
+
 #{
 While (scheduler(n_instr,3) != 9) && (n_cc <= cc_sim)
   Issue
