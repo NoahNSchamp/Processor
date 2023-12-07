@@ -1,6 +1,6 @@
 function [new_rs new_eu dispatched] = Dispatch(rs, e_unit, rs_issue, n_cc)
   %(0: add; 1:sub; 2: multiply; 3: divide)
-  dispatched = [0 0] %Dispatched T/F, RS
+  dispatched = [0 0]; %Dispatched T/F, RS
   rs_i = 0;
   rs_queue = zeros(1,5);
   j =0;
