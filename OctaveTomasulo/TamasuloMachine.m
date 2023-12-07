@@ -6,10 +6,10 @@ iq = zeros(10, 4); iq(:, 1) = 9; %Instruction Queue (Pops)
 rf = 0:7; %Register File
 rat = zeros(1,8);
 out = num2str(zeros(26,8));
-e_unit = zeros(2,3); %Execution Units
+e_unit = zeros(2,4); %Execution Units
 rs_issue = zeros(1, 5) %Tracks Issuing of RS Units
 
-eu_Time = [2, 2, 10, 40];
+eu_time = [2, 2, 10, 40];
 
 rs = zeros(5,7); %[Busy, OP, Tag1, Tag2, Vj, Vk, Dispatch]
 %RS(1) - RS(3) ADD/SUB; RS(4) - RS(5) MUL/DIV 
@@ -50,6 +50,14 @@ if dispatched(1) == 1
   endfor
 endif
 
+[rs rf rat e_unit broadcasted] = Broadcast(rs, rf, rat, e_unit, n_cc, eu_time)
+if broadcasted(1) == 1
+  for i = 1:instr_issued %Update Scheduler Log
+    if broadcasted(2) == scheduler(i, 4) && scheduler(i, 2) != 0
+      scheduler(i, 3) = braodcasted(2);
+    endif
+  endfor
+endif
 
 #{
 While (scheduler(n_instr,3) != 9) && (n_cc <= cc_sim)
