@@ -39,9 +39,9 @@ function [iq_new rs_new rat_new issued] = Issue(iq, rs, rat, rf)
         for i = 1:2 %Update Operands
           rf_i = iq(1,2+i) + 1
           if rat(rf_i) == 0 %Check for RAT/Dependency
-            rs(rs_i, 5 + i) = rf(rf_i) %Update Reservation Station directly from RF
+            rs(rs_i, 4 + i) = rf(rf_i) %Update Reservation Station directly from RF
           else
-            rs(rs_i, 3 + i) = rat(rf_i) %Update Reservation Station from RAT
+            rs(rs_i, 2 + i) = rat(rf_i) %Update Reservation Station from RAT
           endif  
         endfor
         rat(iq(1,2)+1) = rs_i; %Update RAT with output Register

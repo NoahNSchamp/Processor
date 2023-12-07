@@ -18,7 +18,7 @@ rs = zeros(5,7); %[Busy, OP, Tag1, Tag2, Vj, Vk, Dispatch]
 %%Initialize
 
 %%Read Text File
-data = int16(dlmread ("Instructions2.txt", " "))
+data = int16(dlmread ("Instructions.txt", " "))
 n_instr = data(1,1);
 scheduler = zeros(n_instr, 5); %Issue, Dispatch, Broadcast, Associated RS, Associated EU
 cc_sim = data(2,1);
@@ -35,7 +35,7 @@ ir = iq %InstructionRecord (Static) For Record Keeping
 
 %TamasuloMachine Loop
 n_cc = 1;
-for z = 1:cc_sim
+for n_cc = 1:cc_sim
 
   [iq rs rat issued] = Issue(iq, rs, rat, rf)
   if issued(1) == 1
@@ -50,7 +50,7 @@ for z = 1:cc_sim
   if dispatched(1) == 1
     for i = 1:instr_issued %Update Scheduler Log
       if dispatched(2) == scheduler(i, 4) && scheduler(i, 3) == 0
-        scheduler(i, 2) = dispatched(2);
+        scheduler(i, 2) = n_cc;
       endif
     endfor
   endif
@@ -59,7 +59,7 @@ for z = 1:cc_sim
   if broadcasted(1) == 1
     for i = 1:instr_issued %Update Scheduler Log
       if broadcasted(2) == scheduler(i, 4) && scheduler(i, 2) != 0
-        scheduler(i, 3) = braodcasted(2);
+        scheduler(i, 3) = n_cc;
       endif
     endfor
   endif

@@ -6,7 +6,7 @@ function [new_rs new_eu dispatched] = Dispatch(rs, e_unit, rs_issue, n_cc)
   j =0;
   for i = [3 2 1 5 4] %Queues RS eligible for Dispatch, Increasing Priority
     j += 1;
-    if (rs(i, 3) == 0) && (rs(i, 4) == 0) && (rs_issue != n_cc) %Excludes Dependencies or Same Cycle Issuing
+    if (rs(i, 3) == 0) && (rs(i, 4) == 0) && (rs_issue(i) != n_cc) && rs(i,1)==1 %Excludes Dependencies or Same Cycle Issuing
       rs_queue(j) = i;
       rs_i = i;
     endif
@@ -19,9 +19,9 @@ function [new_rs new_eu dispatched] = Dispatch(rs, e_unit, rs_issue, n_cc)
         dispatched = [1 rs_i]; %Dispatched rs_i
         switch (rs(rs_i, 2))
           case {0, 1} %Add/Sub
-            e_unit(1) = [1 rs(rs_i, 2) n_cc rs_i];
+            e_unit(1,:) = [1 rs(rs_i, 2) n_cc rs_i];
           case {2, 3} %Mul/Div
-            e_unit(2) = [1 rs(rs_i, 2) n_cc rs_i];
+            e_unit(2,:) = [1 rs(rs_i, 2) n_cc rs_i];
         endswitch
         break
       endif

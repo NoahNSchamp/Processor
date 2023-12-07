@@ -2,8 +2,8 @@ function [new_rs new_rf new_rat new_e_unit broadcasted] = Broadcast(rs, rf, rat,
   %(0: add; 1:sub; 2: multiply; 3: divide)
   broadcasted = [0 0 0]; %Broadcast T/F, RS, Sum/Product
   eu_i = 0;
-  for i = [1 2] %Checks if EU is ready for Broadcast, Increasing Priority
-    if n_cc - e_unit(i, 3) >= eu_time(e_unit(i,2)+1)
+  for i = 1:2 %Checks if EU is ready for Broadcast, Increasing Priority
+    if ( n_cc - e_unit(i, 3) >= eu_time(e_unit(i,2)+1)) && e_unit(i, 1) == 1
       eu_i = i;
     endif
   endfor
