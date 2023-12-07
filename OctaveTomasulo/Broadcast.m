@@ -13,13 +13,13 @@ function [new_rs new_rf new_rat new_e_unit broadcasted] = Broadcast(rs, rf, rat,
     rs_i = e_unit(eu_i, 4);
     switch (e_unit(eu_i, 2))
       case 0 %Add
-        broadcasted(3) = int8( rs(rs_i, 5) + rs(rs_i, 6));
+        broadcasted(3) = int16( rs(rs_i, 5) + rs(rs_i, 6));
       case 1 %Sub
-        broadcasted(3) = int8( rs(rs_i, 5) - rs(rs_i, 6));
+        broadcasted(3) = int16( rs(rs_i, 5) - rs(rs_i, 6));
       case 2 %Mul
-        broadcasted(3) = int8( rs(rs_i, 5) * rs(rs_i, 6));
+        broadcasted(3) = int16( rs(rs_i, 5) * rs(rs_i, 6));
       case 3 %Div
-        broadcasted(3) = int8( rs(rs_i, 5) / rs(rs_i, 6));
+        broadcasted(3) = int16( rs(rs_i, 5) / rs(rs_i, 6));
     endswitch
     broadcasted(1) = 1; %Valid Broadcast
     broadcasted(2) = rs_i; %Broadcast RS Tag

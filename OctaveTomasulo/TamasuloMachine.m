@@ -18,7 +18,7 @@ rs = zeros(5,7); %[Busy, OP, Tag1, Tag2, Vj, Vk, Dispatch]
 %%Initialize
 
 %%Read Text File
-data = int8(dlmread ("Instructions.txt", " "))
+data = int16(dlmread ("Instructions2.txt", " "))
 n_instr = data(1,1);
 scheduler = zeros(n_instr, 5); %Issue, Dispatch, Broadcast, Associated RS, Associated EU
 cc_sim = data(2,1);
@@ -26,39 +26,45 @@ cc_sim = data(2,1);
 for i = 3:(3+n_instr-1) %Load Instructions to IQ
   %(0: add; 1:sub; 2: multiply; 3: divide)
   iq(i-2,:) = data(i,:);
-end
+endfor
+for i = 1:8
+  rf(i) = data(n_instr+2+i, 1);
+endfor
+
 ir = iq %InstructionRecord (Static) For Record Keeping
 
 %TamasuloMachine Loop
 n_cc = 1;
+for z = 1:cc_sim
 
-[iq rs rat issued] = Issue(iq, rs, rat, rf)
-if issued(1) == 1
-  instr_issued += 1;
-  scheduler(instr_issued, 1) = n_cc;
-  scheduler(instr_issued, 4) = issued(2);
-  rs_issue(issued(2)) = n_cc;
-  iq = POP_IQ(iq);
-endif
+  [iq rs rat issued] = Issue(iq, rs, rat, rf)
+  if issued(1) == 1
+    instr_issued += 1;
+    scheduler(instr_issued, 1) = n_cc;
+    scheduler(instr_issued, 4) = issued(2);
+    rs_issue(issued(2)) = n_cc;
+    iq = POP_IQ(iq);
+  endif
 
-[rs e_unit dispatched] = Dispatch(rs, e_unit, rs_issue, n_cc)
-if dispatched(1) == 1
-  for i = 1:instr_issued %Update Scheduler Log
-    if dispatched(2) == scheduler(i, 4) && scheduler(i, 3) == 0
-      scheduler(i, 2) = dispatched(2);
-    endif
-  endfor
-endif
+  [rs e_unit dispatched] = Dispatch(rs, e_unit, rs_issue, n_cc)
+  if dispatched(1) == 1
+    for i = 1:instr_issued %Update Scheduler Log
+      if dispatched(2) == scheduler(i, 4) && scheduler(i, 3) == 0
+        scheduler(i, 2) = dispatched(2);
+      endif
+    endfor
+  endif
 
-[rs rf rat e_unit broadcasted] = Broadcast(rs, rf, rat, e_unit, n_cc, eu_time)
-if broadcasted(1) == 1
-  for i = 1:instr_issued %Update Scheduler Log
-    if broadcasted(2) == scheduler(i, 4) && scheduler(i, 2) != 0
-      scheduler(i, 3) = braodcasted(2);
-    endif
-  endfor
-endif
+  [rs rf rat e_unit broadcasted] = Broadcast(rs, rf, rat, e_unit, n_cc, eu_time)
+  if broadcasted(1) == 1
+    for i = 1:instr_issued %Update Scheduler Log
+      if broadcasted(2) == scheduler(i, 4) && scheduler(i, 2) != 0
+        scheduler(i, 3) = braodcasted(2);
+      endif
+    endfor
+  endif
 
+endfor
 #{
 While (scheduler(n_instr,3) != 9) && (n_cc <= cc_sim)
   Issue
