@@ -65,6 +65,10 @@ for n_cc = 1:cc_sim
   endif
 
 endfor
+
+rf
+rs
+scheduler
 #{
 While (scheduler(n_instr,3) != 9) && (n_cc <= cc_sim)
   Issue
